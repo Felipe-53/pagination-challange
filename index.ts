@@ -9,6 +9,41 @@ export function getDisplayablePagesOptions(
   numberOfPages: number,
   currentPage: number
 ): number[] {
-  // TODO: Implement this function
-  return [];
+  let pages: number[] = [];
+
+  if (numberOfPages <= maxDisplayedPages) {
+    for (let i = 1; i <= numberOfPages; i++) {
+      pages.push(i);
+    }
+    return pages;
+  }
+
+  let pagesBehindCurrentPage = 1;
+  let pagesAheadCurrentPage =
+    maxDisplayedPages -
+    (pagesBehindCurrentPage + 1); /* 1 refers to the current page */
+
+  if (1 + pagesBehindCurrentPage > numberOfPages) {
+    throw new PaginationError("Invalid number of pages");
+  }
+
+  while (currentPage - pagesBehindCurrentPage < 1) {
+    pagesBehindCurrentPage--;
+    pagesAheadCurrentPage++;
+  }
+
+  while (currentPage + pagesAheadCurrentPage > numberOfPages) {
+    pagesBehindCurrentPage++;
+    pagesAheadCurrentPage--;
+  }
+
+  for (
+    let i = currentPage - pagesBehindCurrentPage;
+    i <= currentPage + pagesAheadCurrentPage;
+    i++
+  ) {
+    pages.push(i);
+  }
+
+  return pages;
 }
